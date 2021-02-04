@@ -48,10 +48,10 @@ class Task
     def task7
         require "csv"
         csv =  CSV.open('test.csv', 'wb')
-        row = []
         puts "enter the no. of rows: "
         number_of_rows = gets.chomp.to_i
         for row_num in 0...number_of_rows
+            row = []
             p "Enter the first element of row #{row_num + 1} "
             row[0] = gets.chomp.to_i
             p "Enter the second element of row #{row_num + 1} "
@@ -59,6 +59,7 @@ class Task
             row[2] = row[0] * row[1]
             csv << row
         end
+        csv.close
     end
 
     def task8
