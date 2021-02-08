@@ -64,7 +64,7 @@ class CsvMethodCollection
 
     def self.multiply_column
         csv =  CSV.open('test.csv', 'wb')
-        puts "enter the no. of rows: "
+        puts "Enter the no. of rows: "
         number_of_rows = gets.chomp.to_i
 
         for row_num in 0...number_of_rows
