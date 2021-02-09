@@ -1,10 +1,15 @@
 # class to calculate Sales-Tax for a shop
 class SalesTaxCalculator
+  @@NON_TAXABLE_PRODUCTS = ['chocolate', 'chocolates', 'food', 'book', 'pills', 'medicine', 'medicines']
+  @@SALES_TAX_RATE = 10
+  @@IMPORT_TAX_RATE = 5
+
   def initialize
     @orders = []
     @order = ' '
     @total_price = 0.00
     @total_tax = 0.00
+    @tax_percent = 0.00
   end
 
   def start
@@ -18,22 +23,25 @@ class SalesTaxCalculator
   def take_order
     @order = gets.chomp
     return if @order.empty?
-
+    return unless @order.include? 'at'
     break_order
+    check_taxable
     calculate_tax
     add_to_orders
   end
 
   def calculate_tax
-    exempt = ['chocolate', 'chocolates', 'food', 'book', 'pills', 'medicine', 'medicines']
-    tax = 0.00
-
-    tax += 0.1 * @price if (@words_of_order&exempt).empty?
-    tax += (0.05 * @price * 20).ceil/20.0 if @words_of_order.include? 'imported'
-
+    tax = (@tax_percent * @price * 20).ceil / 20.0
     @total_tax += tax
     @price += tax
     @total_price += @price
+  end
+
+  def check_taxable
+    tax_rate = 0
+    tax_rate += @@SALES_TAX_RATE if (@words_of_order & @@NON_TAXABLE_PRODUCTS).empty?
+    tax_rate += @@IMPORT_TAX_RATE if @words_of_order.include? 'imported'
+    @tax_percent = tax_rate / 100.0
   end
 
   def break_order
@@ -53,11 +61,15 @@ class SalesTaxCalculator
   end
 
   def order_summary
-    @orders.push("Sales Taxes : #{'%.02f' % @total_tax}")
-    @orders.push("Total : #{'%.02f' % @total_price}")
+    if @order.empty?
+      @orders.push("Sales Taxes : #{'%.02f' % @total_tax}")
+      @orders.push("Total : #{'%.02f' % @total_price}")
 
-    puts 'Your order Summary :'
-    @orders.each {|order| puts order }
+      puts 'Your order Summary :'
+      @orders.each {|order| puts order }
+    else
+      puts 'Invalid Input'
+    end
   end
 end
 
